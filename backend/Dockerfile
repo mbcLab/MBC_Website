@@ -8,7 +8,7 @@ RUN npm install
 COPY . .
 
 
-RUN npm install nodemon  #this was needed in order to make it work
+RUN npm install nodemon -g 
 
 EXPOSE 5000
-CMD ["sudo nodemon index"]
+CMD ["nodr index.js"]
