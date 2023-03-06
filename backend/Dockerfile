@@ -11,4 +11,4 @@ COPY . .
 RUN npm install nodemon -g 
 
 EXPOSE 5000
-CMD ["nodr index.js"]
+CMD ["node index.js"]
