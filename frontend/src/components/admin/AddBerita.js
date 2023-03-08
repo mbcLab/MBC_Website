@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import axios from "axios";
+import axios from "../../httphelper.js";
 import { storage } from "../../firebase.js";
 import { useNavigate } from "react-router-dom";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import httphelper from "../../httphelper.js";
  
 const AddBerita = () => {
   const [judul, setJudul] = useState("");
