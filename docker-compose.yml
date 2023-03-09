@@ -17,8 +17,8 @@ services:
       - backend
     build:
       context: ./frontend
-      args:
-        - REACT_APP_API_BASE_URL=$CLIENT_API_BASE_URL
+      # args:
+      #   - REACT_APP_API_BASE_URL=$CLIENT_API_BASE_URL
     container_name: frontend
     ports:
       - "80:80"
