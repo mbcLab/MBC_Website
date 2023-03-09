@@ -19,7 +19,7 @@ ENV REACT_APP_API_BASE_URL=$REACT_APP_API_BASE_URL
 
 CMD npx serve -s build -l 80
 
-FROM nginx:slim
+FROM nginx
 
 # Copy config nginx
 COPY --from=build /app/.nginx/nginx.conf /etc/nginx/conf.d/default.conf
