@@ -1,7 +1,7 @@
-FROM node:slim
+FROM node AS build
 
 # Create app directory
-WORKDIR /
+WORKDIR /app
 # Install app dependencies
 # A wildcard is used to ensure both package.json AND package-lock.json are copi>
 # where available (npm@5+)
@@ -14,12 +14,12 @@ RUN npm install -g serve
 # Bundle app source
 COPY . .
 RUN npm run-script build
-ARG REACT_APP_API_BASE_URL
-ENV REACT_APP_API_BASE_URL=$REACT_APP_API_BASE_URL
+# ARG REACT_APP_API_BASE_URL
+# ENV REACT_APP_API_BASE_URL=$REACT_APP_API_BASE_URL
 
-CMD npx serve -s build -l 80
+# CMD npx serve -s build -l 80
 
-FROM nginx:slim
+FROM nginx
 
 # Copy config nginx
 COPY --from=build /app/.nginx/nginx.conf /etc/nginx/conf.d/default.conf
