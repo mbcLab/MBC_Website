@@ -2,35 +2,93 @@ import User from "../models/UserModel.js";
 import Project from "../models/ProjectModel.js";
 import Berita from "../models/BeritaModel.js";
 import schema from "../models/schema.js";
-import { model } from "mongoose";
 
-// R
+async function getData() {
+  const data = (await schema.findOne().exec()) ?? false;
+  if (!data) {
+    return false;
+  } else {
+    return data;
+  }
+}
+
+// get
+
 export const getBerita = async (req, res) => {
-  try {
-    const Berita1 = await Berita.find();
-    res.json(Berita1);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+  const data = await getData().then((dat) => dat.blogs);
+  if (!data) {
+    return res.status(404).json({ message: "[?] Failed to find database." });
   }
+
+  return res.json(data);
+  // try {
+  //   const Berita1 = await Berita.find();
+  //   res.json(Berita1);
+  // } catch (error) {
+  //   res.status(500).json({ message: error.message });
+  // }
 };
+
 export const getProject = async (req, res) => {
-  try {
-    const Project1 = await Project.find();
-    res.json(Project1);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+  const data = (await schema.findOne().exec()) ?? false;
+  if (!data) {
+    return res.status(404).json({ message: "[?] Database not found." });
   }
+  const projectList = data.projects;
+  return res.json(projectList);
 };
+
 export const getUser = async (req, res) => {
+  const data = await getData().then((dat) => dat.users);
+  if (!data) {
+    return res.status(404).json({ message: "[?] Database not found." });
+  }
+  return res.json(data);
+  // try {
+  //   const users = await User.find();
+  //   res.json(users);
+  // } catch (error) {
+  //   res.status(500).json({ message: error.message });
+  // }
+};
+
+export const getProjectById = async (req, res) => {
   try {
-    const users = await User.find();
-    res.json(users);
+    const project = await Project.findById(req.params.id);
+    res.json(project);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(404).json({ message: error.message });
   }
 };
 
-// U
+export const getProjectBydate = async (req, res) => {
+  try {
+    const project = await Project.findOne({ tanggal: Date.now() });
+    res.json(project);
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+  }
+};
+
+export const getBeritaById = async (req, res) => {
+  try {
+    const berita = await Berita.findById(req.params.id);
+    res.json(berita);
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+  }
+};
+
+export const getUserById = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    res.json(user);
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+  }
+};
+
+// update
 export const updateProject = async (req, res) => {
   try {
     const updateProject = await Project.updateOne(
@@ -42,6 +100,7 @@ export const updateProject = async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 };
+
 export const updateUser = async (req, res) => {
   try {
     const updateduser = await User.updateOne(
@@ -53,6 +112,7 @@ export const updateUser = async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 };
+
 export const updateBerita = async (req, res) => {
   try {
     const updateBerita = await Berita.updateOne(
@@ -65,8 +125,7 @@ export const updateBerita = async (req, res) => {
   }
 };
 
-// C
-
+// save
 export const saveBerita = async (req, res) => {
   // const Berita1 = new Berita(req.body);
   const body = req.body;
@@ -135,6 +194,7 @@ export const saveUser = async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 };
+
 export const saveProject = async (req, res) => {
   // const Project1 = new Project(req.body);
   const proj = (await schema.findOne().exec()) ?? false;
@@ -146,42 +206,7 @@ export const saveProject = async (req, res) => {
   return res.status(201).json({ message: "Project saved successfully." });
 };
 
-// R
-
-export const getProjectById = async (req, res) => {
-  try {
-    const project = await Project.findById(req.params.id);
-    res.json(project);
-  } catch (error) {
-    res.status(404).json({ message: error.message });
-  }
-};
-export const getProjectBydate = async (req, res) => {
-  try {
-    const project = await Project.findOne({ tanggal: Date.now() });
-    res.json(project);
-  } catch (error) {
-    res.status(404).json({ message: error.message });
-  }
-};
-export const getBeritaById = async (req, res) => {
-  try {
-    const berita = await Berita.findById(req.params.id);
-    res.json(berita);
-  } catch (error) {
-    res.status(404).json({ message: error.message });
-  }
-};
-export const getUserById = async (req, res) => {
-  try {
-    const user = await User.findById(req.params.id);
-    res.json(user);
-  } catch (error) {
-    res.status(404).json({ message: error.message });
-  }
-};
-
-// D
+// del
 export const deleteUser = async (req, res) => {
   try {
     const deleteduser = await User.deleteOne({ _id: req.params.id });
@@ -190,14 +215,18 @@ export const deleteUser = async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 };
+
 export const deleteProject = async (req, res) => {
-  try {
-    const deleteduser = await Project.deleteOne({ _id: req.params.id });
-    res.status(200).json(deleteduser);
-  } catch (error) {
-    res.status(400).json({ message: error.message });
+  const id = req.params.id;
+  const data = (await schema.findOne().exec()) ?? false;
+  if (!data) {
+    return res.status(404).json({ message: "Failed to find id." });
   }
+  await data.projects.pop({ _id: id });
+  await data.save();
+  return res.status(200).json(`Deleted database from id ${id}`);
 };
+
 export const deleteBerita = async (req, res) => {
   try {
     const deleteduser = await Berita.deleteOne({ _id: req.params.id });
