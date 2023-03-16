@@ -3,7 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { storage } from "../../firebase.js";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
- 
+
 const AddUser = () => {
   const [nama, setnama] = useState("");
   const [divisi, setdivisi] = useState("Gametech");
@@ -13,26 +13,37 @@ const AddUser = () => {
   const [percent, setPercent] = useState(0);
   const navigate = useNavigate();
   var namafile = "";
-  var persenan = '';
- 
+  var persenan = "";
+
   const saveUser = async (e) => {
     e.preventDefault();
+    function validURL(link) {
+      try {
+        return Boolean(new URL(link));
+      } catch {
+        return false;
+      }
+    }
+    if (!validURL(instagram) || !validURL(linkedin)) {
+      console.log("[?] URL unknown");
+      return;
+    }
     try {
-      if(foto != null){
-        const storageRef = ref(storage,'/user/'+nama+'/'+foto.name);
+      if (foto != null) {
+        const storageRef = ref(storage, "/user/" + nama + "/" + foto.name);
         const uploadTask = uploadBytesResumable(storageRef, foto);
         uploadTask.on(
           "state_changed",
-            (snapshot) => {
+          (snapshot) => {
             const percent = Math.round(
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+              (snapshot.bytesTransferred / snapshot.totalBytes) * 100
             );
             setPercent(percent);
-            },
+          },
           (err) => console.log(err),
 
-          () =>{
-            getDownloadURL(uploadTask.snapshot.ref).then(async (url)=>{
+          () => {
+            getDownloadURL(uploadTask.snapshot.ref).then(async (url) => {
               namafile = url;
               alert("berhasil ditambahkan");
               await axios.post("http://127.0.0.1:5000/MakeUser", {
@@ -44,25 +55,36 @@ const AddUser = () => {
               });
               navigate("/UserList");
             });
-          });  
-        }
+          }
+        );
+      }
 
+      // sending data to backend
       await axios.post("http://localhost:5000/MakeUser", {
         nama,
         divisi,
-        instagram,
-        linkedin
+        social: [
+          {
+            media: "instagram",
+            link: instagram,
+          },
+          {
+            media: "linkedin",
+            link: linkedin,
+          },
+        ],
       });
       navigate("/UserList");
     } catch (error) {
       console.log(error);
     }
   };
-    if(percent == 0){
+  if (percent === 0) {
     persenan = <p></p>;
+  } else {
+    persenan = <p>{percent} "% done"</p>;
   }
-  else{ persenan = <p>{percent} "% done"</p>}
- 
+
   return (
     <div className="columns mt-5">
       <div className="column is-half">
@@ -131,7 +153,7 @@ const AddUser = () => {
               />
             </div>
           </div>
-          
+
           <div className="field">
             <div className="control">
               <button type="submit" className="button is-success">
@@ -145,5 +167,5 @@ const AddUser = () => {
     </div>
   );
 };
- 
+
 export default AddUser;

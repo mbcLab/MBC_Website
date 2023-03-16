@@ -177,13 +177,14 @@ export const saveUser = async (req, res) => {
         user.users.gis.push(list);
         user.save();
         break;
-      case "Big Data":
+      case "BigData":
         user.users.bigdata.push(list);
         user.save();
         break;
 
       default:
         console.log("404 Not Found\nSwitch case statement.");
+        return res.status(404).json({ message: "404 Data not found." });
         break;
     }
   }
