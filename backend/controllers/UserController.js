@@ -21,12 +21,6 @@ export const getBerita = async (req, res) => {
   }
 
   return res.json(data);
-  // try {
-  //   const Berita1 = await Berita.find();
-  //   res.json(Berita1);
-  // } catch (error) {
-  //   res.status(500).json({ message: error.message });
-  // }
 };
 
 export const getProject = async (req, res) => {
@@ -44,12 +38,6 @@ export const getUser = async (req, res) => {
     return res.status(404).json({ message: "[?] Database not found." });
   }
   return res.json(data);
-  // try {
-  //   const users = await User.find();
-  //   res.json(users);
-  // } catch (error) {
-  //   res.status(500).json({ message: error.message });
-  // }
 };
 
 export const getProjectById = async (req, res) => {
@@ -80,12 +68,22 @@ export const getBeritaById = async (req, res) => {
 };
 
 export const getUserById = async (req, res) => {
-  try {
-    const user = await User.findById(req.params.id);
-    res.json(user);
-  } catch (error) {
-    res.status(404).json({ message: error.message });
+  const id = await req.params.id;
+  const data = await getData().then((dat) => dat.users);
+  const keys = Object.keys(data);
+  let userData;
+  for (const key of keys) {
+    const division = data[key];
+    for (const user of division) {
+      if (user.id === id) {
+        userData = user;
+      }
+    }
   }
+  if (!userData) {
+    return res.status(404).json({ message: "Failed to find user." });
+  }
+  return res.json(userData);
 };
 
 // update
@@ -102,15 +100,29 @@ export const updateProject = async (req, res) => {
 };
 
 export const updateUser = async (req, res) => {
-  try {
-    const updateduser = await User.updateOne(
-      { _id: req.params.id },
-      { $set: req.body }
-    );
-    res.status(200).json(updateduser);
-  } catch (error) {
-    res.status(400).json({ message: error.message });
+  const id = await req.params.id;
+  const body = await req.body;
+  const db = await schema.findOne().exec();
+  const data = db.users;
+  const keys = Object.keys(data);
+  const bodyKeys = Object.keys(body);
+
+  for (const key of keys) {
+    for (const user of data[key]) {
+      if (user._id == id) {
+        user.name = body.nama;
+        for (const bKey of bodyKeys) {
+          user.social.forEach((soc) =>
+            soc.media === bKey
+              ? (soc.link = body[bKey])
+              : new Error("Unknown social media")
+          );
+        }
+        await db.save();
+      }
+    }
   }
+  return res.json({ success: true });
 };
 
 export const updateBerita = async (req, res) => {
@@ -139,7 +151,7 @@ export const saveBerita = async (req, res) => {
   if (!berita) {
     return res.status(400).json({ message: "Unknown database." });
   } else {
-    console.log("[*] Pushing to mongodb.");
+    console.log("[*] Pushing to database.");
     berita.blogs.push(addList);
     await berita.save();
   }
@@ -209,6 +221,31 @@ export const saveProject = async (req, res) => {
 
 // del
 export const deleteUser = async (req, res) => {
+  /* 
+    failed code
+  */
+  // const db = (await schema.findOne().exec()) ?? false;
+  // console.log(db);
+  // if (!db) {
+  //   res.status(404).json({ message: "Database not found." });
+  // }
+  // const id = await req.params.id;
+  // const data = db.users;
+  // const division = Object.keys(data);
+  // for (const div of division) {
+  //   for (const user of data[div]) {
+  //     if (user._id === id) {
+  //       // const index = data[users].indexOf(user);
+  //       // console.log(index);
+  //       // if (index > -1) {
+  //       //   data[users].splice(index, 1);
+  //       // }
+  //     }
+  //   }
+  // }
+  // console.log(data);
+  // await db.save();
+
   try {
     const deleteduser = await User.deleteOne({ _id: req.params.id });
     res.status(200).json(deleteduser);
