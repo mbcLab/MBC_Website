@@ -1,14 +1,9 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import Table from "react-bootstrap/Table";
 
 const UserList = () => {
   const [users, setUser] = useState({});
-  const [cyber, setCyber] = useState([]);
-  const [bigdata, setBigdata] = useState([]);
-  const [gis, setGis] = useState([]);
-  const [gametech, setGametech] = useState([]);
 
   useEffect(() => {
     getUsers();
@@ -34,21 +29,24 @@ const UserList = () => {
   };
 
   const getList = (div, divName) => {
+    function socialList(soc) {
+      return (
+        <td>
+          <a href={soc.link} target="_blank" rel="noreferrer">
+            {soc.media.toUpperCase()}
+          </a>
+        </td>
+      );
+    }
+
     return div.map((user, index) => (
       <tr key={user._id}>
         <td>{index + 1}</td>
         <td>{user.name}</td>
         <td>{divName}</td>
-        <td>
-          <a href={user.social[0].link} target="_blank" rel="noreferrer">
-            Instagram
-          </a>
-        </td>
-        <td>
-          <a href={user.social[1].link} target="_blank" rel="noreferrer">
-            Linkedin
-          </a>
-        </td>
+        {user.social.map((soc) => {
+          return socialList(soc);
+        })}
         <td>
           <Link
             to={`/editUser/${user._id}`}
@@ -76,7 +74,7 @@ const UserList = () => {
 
         <table className="table is-striped is-fullwidth mt-2">
           <thead>
-            <tr>
+            <tr key="head">
               <th>No</th>
               <th>Nama</th>
               <th>divisi</th>
@@ -86,15 +84,15 @@ const UserList = () => {
             </tr>
           </thead>
           <tbody>
+            {users.bigdata
+              ? getList(users.bigdata, "Big Data")
+              : console.log(users)}
             {users.cyber
               ? getList(users.cyber, "Cyber Security")
               : console.log(users)}
             {users.gis ? getList(users.gis, "GIS") : console.log(users)}
             {users.gametech
               ? getList(users.gametech, "GameTech")
-              : console.log(users)}
-            {users.bigdata
-              ? getList(users.bigdata, "Big Data")
               : console.log(users)}
           </tbody>
         </table>
