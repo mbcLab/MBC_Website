@@ -1,17 +1,21 @@
-import { GoogleAuthProvider,getAuth, signInWithEmailAndPassword, signOut } from "firebase/auth";
+import {
+  GoogleAuthProvider,
+  getAuth,
+  signInWithEmailAndPassword,
+  signOut,
+} from "firebase/auth";
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getStorage } from "firebase/storage";
 
-
 const firebaseConfig = {
-  apiKey: "AIzaSyCxNHvM-orxiv86FMd5P3QIF4aC5ft_ems",
-  authDomain: "labmbc2023-e1f23.firebaseapp.com",
-  projectId: "labmbc2023-e1f23",
-  storageBucket: "labmbc2023-e1f23.appspot.com",
-  messagingSenderId: "1001110107168",
-  appId: "1:1001110107168:web:df552f3818bed38bd2f845",
-  measurementId: "G-1JXSWTR1FX"
+  apiKey: "AIzaSyAy7_9hYIJqnEhu0wRwjQ9k9lTIu024sJQ",
+  authDomain: "website-c8177.firebaseapp.com",
+  projectId: "website-c8177",
+  storageBucket: "website-c8177.appspot.com",
+  messagingSenderId: "795164772274",
+  appId: "1:795164772274:web:4b3625f0cd3203267fc6ab",
+  measurementId: "G-R6997RZPZZ",
 };
 
 // Initialize Firebase

@@ -2,10 +2,10 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import Project from "../projects/Project";
- 
+
 const ProjectList = () => {
   const [projects, setproject] = useState([]);
- 
+
   useEffect(() => {
     getproject();
   }, []);
@@ -13,7 +13,7 @@ const ProjectList = () => {
     const response = await axios.get("http://localhost:5000/Project");
     setproject(response.data);
   };
- 
+
   const deleteproject = async (id) => {
     try {
       await axios.delete(`http://localhost:5000/deleteProject/${id}`);
@@ -22,7 +22,7 @@ const ProjectList = () => {
       console.log(error);
     }
   };
- 
+
   return (
     <div className="columns mt-5">
       <div className="column is-half">
@@ -44,10 +44,10 @@ const ProjectList = () => {
             {projects.map((project, index) => (
               <tr key={project._id}>
                 <td>{index + 1}</td>
-                <td>{project.proyek}</td>
-                <td>{project.tanggal}</td>
+                <td>{project.title}</td>
+                <td>{project.date}</td>
                 <td>{project.tanggalberakhir}</td>
-                <td>{project.isi}</td>
+                <td>{project.content}</td>
                 <td>
                   <Link
                     to={`/editProject/${project._id}`}
@@ -70,5 +70,5 @@ const ProjectList = () => {
     </div>
   );
 };
- 
+
 export default ProjectList;
