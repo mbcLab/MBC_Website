@@ -221,37 +221,25 @@ export const saveProject = async (req, res) => {
 
 // del
 export const deleteUser = async (req, res) => {
-  /* 
-    failed code
-  */
-  // const db = (await schema.findOne().exec()) ?? false;
-  // console.log(db);
-  // if (!db) {
-  //   res.status(404).json({ message: "Database not found." });
-  // }
-  // const id = await req.params.id;
-  // const data = db.users;
-  // const division = Object.keys(data);
-  // for (const div of division) {
-  //   for (const user of data[div]) {
-  //     if (user._id === id) {
-  //       // const index = data[users].indexOf(user);
-  //       // console.log(index);
-  //       // if (index > -1) {
-  //       //   data[users].splice(index, 1);
-  //       // }
-  //     }
-  //   }
-  // }
-  // console.log(data);
-  // await db.save();
-
-  try {
-    const deleteduser = await User.deleteOne({ _id: req.params.id });
-    res.status(200).json(deleteduser);
-  } catch (error) {
-    res.status(400).json({ message: error.message });
+  const id = await req.params.id;
+  const db = (await schema.findOne().exec()) ?? false;
+  if (!db) {
+    res.status(404).json({ message: "Database not found." });
   }
+
+  const division = Object.keys(db.users);
+  for (let div of division) {
+    let num = 0;
+    for (let user of db.users[div]) {
+      if (user._id == id) {
+        db.users[div].splice(num, 1);
+        await db.save();
+      }
+      num++;
+    }
+  }
+
+  return res.status(200);
 };
 
 export const deleteProject = async (req, res) => {
