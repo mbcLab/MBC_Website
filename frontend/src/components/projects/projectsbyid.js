@@ -5,9 +5,9 @@ import { useNavigate, useParams } from "react-router-dom";
 const ProjectbyId = () => {
   const [Proyek, setProyek] = useState("");
   const [isi, setisi] = useState("");
-  const [gambar, setgambar] = useState("");
-  const [tanggal, setTanggal] = useState(Date.now);
-  const [tanggalberakhir, setTanggalberakhir] = useState(Date.now);
+  const [gambar, setgambar] = useState(""); // belum ada
+  const [tanggal, setTanggal] = useState("");
+  const [tanggalberakhir, setTanggalberakhir] = useState(""); // belum ada
   const { id } = useParams();
 
   useEffect(() => {
@@ -15,21 +15,31 @@ const ProjectbyId = () => {
   }, []);
 
   const getUserById = async () => {
-    const response = await axios.get(`http://localhost:5000/Project/${id}`);
-    setProyek(response.data.title);
-    setTanggal(response.data.date);
-    setTanggalberakhir(response.data.tanggalberakhir);
-    setisi(response.data.content);
-    setgambar(response.data.namafile);
+    return await axios
+      .get(`http://localhost:5000/Project/${id}`)
+      .then((res) => {
+        const data = res.data[0];
+        const startDate = new Date(data.date);
+        setProyek(data.title);
+        setTanggal(new Date(data.date).toUTCString());
+        data.dueDate
+          ? setTanggalberakhir(new Date(data.dueDate).toUTCString())
+          : setTanggalberakhir(
+              new Date(
+                startDate.setMonth(startDate.getMonth() + 3)
+              ).toUTCString()
+            );
+        setisi(data.content);
+        setgambar(data.namafile);
+      });
   };
 
   return (
-    <section class="w3-container" style={{ padding: "100px" }}>
-      <h2>{Proyek}</h2>
-      <h5>
-        dari {tanggal} sampai dengan {tanggalberakhir}
-      </h5>
-      <img src={gambar} style={{ maxWidth: "100%" }} />
+    <section className="w3-container" style={{ padding: "100px" }}>
+      <h2 className="font-extrabold">{Proyek}</h2>
+      <h5>Start Date: {tanggal}</h5>
+      <h5>Due Date: {tanggalberakhir}</h5>
+      <img src={gambar} style={{ maxWidth: "100%" }} alt="gambar" />
       <p>{isi}</p>
     </section>
   );

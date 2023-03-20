@@ -41,12 +41,17 @@ export const getUser = async (req, res) => {
 };
 
 export const getProjectById = async (req, res) => {
-  try {
-    const project = await Project.findById(req.params.id);
-    res.json(project);
-  } catch (error) {
-    res.status(404).json({ message: error.message });
+  const id = await req.params.id;
+  const data =
+    (await getData().then((dat) =>
+      dat.projects.filter((proj) => proj._id == id)
+    )) ?? false;
+
+  if (!data) {
+    return res.status(404).json({ message: "Project not found." });
   }
+
+  return res.status(200).json(data);
 };
 
 export const getProjectBydate = async (req, res) => {
@@ -243,21 +248,41 @@ export const deleteUser = async (req, res) => {
 };
 
 export const deleteProject = async (req, res) => {
-  const id = req.params.id;
-  const data = (await schema.findOne().exec()) ?? false;
-  if (!data) {
-    return res.status(404).json({ message: "Failed to find id." });
+  const id = await req.params.id;
+  const db = (await schema.findOne().exec()) ?? false;
+  if (!db) {
+    return res.status(404).json({ message: "Database not found." });
   }
-  await data.projects.pop({ _id: id });
-  await data.save();
-  return res.status(200).json(`Deleted database from id ${id}`);
+
+  let length = db.projects.length;
+
+  while (length--) {
+    if (db.projects[length] && db.projects[length]._id == id) {
+      db.projects.splice(length, 1);
+      await db.save();
+      return res.status(200);
+    }
+  }
+
+  return res.status(404).json({ message: "Unknown error, check console." });
 };
 
 export const deleteBerita = async (req, res) => {
-  try {
-    const deleteduser = await Berita.deleteOne({ _id: req.params.id });
-    res.status(200).json(deleteduser);
-  } catch (error) {
-    res.status(400).json({ message: error.message });
+  const id = await req.params.id;
+  const db = (await schema.findOne().exec()) ?? false;
+  if (!db) {
+    return res.status(404).json({ message: "Database not found." });
   }
+
+  let length = db.blogs.length;
+
+  while (length--) {
+    if (db.blogs[length] && db.blogs[length]._id == id) {
+      db.blogs.splice(length, 1);
+      await db.save();
+      return res.status(200);
+    }
+  }
+
+  return res.status(404).json({ message: "Unknown error, check console." });
 };
