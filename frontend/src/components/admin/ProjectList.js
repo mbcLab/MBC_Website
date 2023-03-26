@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
-import Project from "../projects/Project";
+import Button from "react-bootstrap/Button";
 
 const ProjectList = () => {
   const [projects, setproject] = useState([]);
@@ -17,7 +16,6 @@ const ProjectList = () => {
   const deleteproject = async (id) => {
     try {
       await axios.delete(`http://localhost:5000/deleteProject/${id}`);
-      getproject();
     } catch (error) {
       console.log(error);
     }
@@ -26,10 +24,10 @@ const ProjectList = () => {
   return (
     <div className="columns mt-5">
       <div className="column is-half">
-        <Link to="/addProject" className="button is-success">
-          Add New
-        </Link>
-        <table className="table is-striped is-fullwidth mt-2">
+        <Button href="/addProject" variant="success" className="ml-5">
+          Add Project
+        </Button>
+        <table className="table is-striped is-fullwidth mt-2 text-center">
           <thead>
             <tr>
               <th>No</th>
@@ -45,22 +43,31 @@ const ProjectList = () => {
               <tr key={project._id}>
                 <td>{index + 1}</td>
                 <td>{project.title}</td>
-                <td>{project.date}</td>
+                <td>{new Date(project.date).toUTCString()}</td>
                 <td>{project.tanggalberakhir}</td>
                 <td>{project.content}</td>
-                <td>
-                  <Link
-                    to={`/editProject/${project._id}`}
-                    className="button is-info is-small mr-1"
+                <td className="flex flex-row gap-3">
+                  <Button
+                    href={`/editProject/${project._id}`}
+                    className="flex-auto"
                   >
                     Edit
-                  </Link>
-                  <button
+                  </Button>
+
+                  <Button
+                    href="/ProjectList"
+                    variant="danger"
                     onClick={() => deleteproject(project._id)}
-                    className="button is-danger is-small"
+                    className="bg-red-600 hover:bg-red-900 flex-auto"
                   >
                     Delete
-                  </button>
+                  </Button>
+                  {/* <button
+                    onClick={() => deleteproject(project._id)}
+                    className="button is-danger is-small text-center inset-10 bg-red-600 hover:bg-red-900 hover:text-white"
+                  >
+                    Delete
+                  </button> */}
                 </td>
               </tr>
             ))}

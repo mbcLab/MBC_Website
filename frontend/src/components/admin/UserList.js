@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import Button from "react-bootstrap/Button";
 
 const UserList = () => {
   const [users, setUser] = useState({});
@@ -47,19 +47,19 @@ const UserList = () => {
         {user.social.map((soc) => {
           return socialList(soc);
         })}
-        <td>
-          <Link
-            to={`/editUser/${user._id}`}
-            className="button is-info is-small mr-1"
-          >
+        <td className="flex flex-row gap-3">
+          <Button href={`/edituser/${user._id}`} className="flex-auto">
             Edit
-          </Link>
-          <button
+          </Button>
+
+          <Button
+            href="/userList"
+            variant="danger"
             onClick={() => deleteUser(user._id)}
-            className="button is-danger is-small"
+            className="bg-red-600 hover:bg-red-900 flex-auto"
           >
             Delete
-          </button>
+          </Button>
         </td>
       </tr>
     ));
@@ -68,18 +68,18 @@ const UserList = () => {
   return (
     <div className="columns mt-5">
       <div className="column is-half">
-        <Link to="/addUser" className="button is-success">
-          Add New
-        </Link>
+        <Button href="/addUser" variant="success" className="ml-5">
+          Add User
+        </Button>
 
-        <table className="table is-striped is-fullwidth mt-2">
+        <table className="table is-striped is-fullwidth mt-2 text-center">
           <thead>
             <tr key="head">
               <th>No</th>
               <th>Nama</th>
-              <th>divisi</th>
-              <th>instagram</th>
-              <th>linkedin</th>
+              <th>Divisi</th>
+              <th>Instagram</th>
+              <th>Linkedin</th>
               <th>Actions</th>
             </tr>
           </thead>

@@ -2,6 +2,7 @@ import User from "../models/UserModel.js";
 import Project from "../models/ProjectModel.js";
 import Berita from "../models/BeritaModel.js";
 import schema from "../models/schema.js";
+import mongoose from "mongoose";
 
 async function getData() {
   const data = (await schema.findOne().exec()) ?? false;
@@ -54,22 +55,25 @@ export const getProjectById = async (req, res) => {
   return res.status(200).json(data);
 };
 
-export const getProjectBydate = async (req, res) => {
-  try {
-    const project = await Project.findOne({ tanggal: Date.now() });
-    res.json(project);
-  } catch (error) {
-    res.status(404).json({ message: error.message });
-  }
-};
+// export const getProjectBydate = async (req, res) => {
+//   try {
+//     const project = await Project.findOne({ tanggal: Date.now() });
+//     res.json(project);
+//   } catch (error) {
+//     res.status(404).json({ message: error.message });
+//   }
+// };
 
 export const getBeritaById = async (req, res) => {
-  try {
-    const berita = await Berita.findById(req.params.id);
-    res.json(berita);
-  } catch (error) {
-    res.status(404).json({ message: error.message });
+  const id = await req.params.id;
+  const data = await getData().then((dat) =>
+    dat.blogs.filter((proj) => proj._id == id)
+  );
+  if (!data) {
+    return res.status(404).json({ message: "[?] Blog id not found." });
   }
+
+  return res.json(data);
 };
 
 export const getUserById = async (req, res) => {
@@ -93,15 +97,19 @@ export const getUserById = async (req, res) => {
 
 // update
 export const updateProject = async (req, res) => {
-  try {
-    const updateProject = await Project.updateOne(
-      { _id: req.params.id },
-      { $set: req.body }
-    );
-    res.status(200).json(updateProject);
-  } catch (error) {
-    res.status(400).json({ message: error.message });
+  const id = await req.params.id;
+  const body = await req.body;
+  if (!body.isi || !body.proyek) {
+    return res.status(404).json({ message: "Detail not found" });
   }
+  const db = await schema.findOne({}, "projects").exec();
+  const data = db.projects.forEach((proj) => {
+    if (proj.id == id) {
+      (proj.title = body.proyek), (proj.content = body.isi);
+    }
+  });
+  await db.save();
+  return res.status(200).json({ message: "Updated successfully" });
 };
 
 export const updateUser = async (req, res) => {

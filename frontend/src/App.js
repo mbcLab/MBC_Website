@@ -1,7 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import React, { useEffect } from "react";
 import Beranda from "./components/beranda/Beranda";
-import Welcome from "./components/beranda/welcome";
 import Blogs from "./components/blogs/Blogs";
 import Project from "./components/projects/Project";
 import TentangKami from "./components/tentangKami/TentangKami";
@@ -19,21 +18,20 @@ import Navbar from "./components/attribute/navbar";
 import Footer from "./components/attribute/footer";
 import NavbarLoggedIn from "./components/attribute/navbarLoggedIn";
 import LogoutUser from "./components/admin/logout";
-import Profile from "./components/beranda/profile";
 import ListBlogs from "./components/blogs/listBlogs";
 import BlogList from "./components/admin/BlogList";
 import ProjectList from "./components/admin/ProjectList";
 import BlogsbyId from "./components/blogs/blogsbyid";
 import ProjectbyId from "./components/projects/projectsbyid";
+import Spinner from "react-bootstrap/Spinner";
 function App() {
   let [user, loading, error] = useAuthState(auth);
   if (loading) {
     return (
-      <div className="w3-center">
-        <img
-          src="https://media.tenor.com/On7kvXhzml4AAAAj/loading-gif.gif"
-          alt="Loading..."
-        ></img>
+      <div className="h-screen text-center items-center flex">
+        <Spinner animation="border" className="m-auto scale-150">
+          <span>Loading...</span>
+        </Spinner>
       </div>
     );
   }

@@ -15,7 +15,7 @@ import {
   deleteBerita,
   deleteProject,
   deleteUser,
-  getProjectBydate,
+  // getProjectBydate,
 } from "../controllers/UserController.js";
 
 const router = express.Router();
@@ -27,7 +27,7 @@ router.patch("/UpdateBerita/:id", updateBerita);
 router.delete("/deleteBerita/:id", deleteBerita);
 // Project
 router.get("/Project", getProject);
-router.get("/ProjectDate", getProjectBydate);
+// router.get("/ProjectDate", getProjectBydate);
 router.get("/Project/:id", getProjectById);
 router.post("/MakeProject", saveProject);
 router.patch("/UpdateProject/:id", updateProject);
