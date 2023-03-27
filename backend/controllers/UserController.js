@@ -1,8 +1,4 @@
-import User from "../models/UserModel.js";
-import Project from "../models/ProjectModel.js";
-import Berita from "../models/BeritaModel.js";
 import schema from "../models/schema.js";
-import mongoose from "mongoose";
 
 async function getData() {
   const data = (await schema.findOne().exec()) ?? false;
@@ -99,17 +95,27 @@ export const getUserById = async (req, res) => {
 export const updateProject = async (req, res) => {
   const id = await req.params.id;
   const body = await req.body;
-  if (!body.isi || !body.proyek) {
-    return res.status(404).json({ message: "Detail not found" });
-  }
   const db = await schema.findOne({}, "projects").exec();
-  const data = db.projects.forEach((proj) => {
+  let complete = false;
+  db.projects.forEach((proj) => {
     if (proj.id == id) {
-      (proj.title = body.proyek), (proj.content = body.isi);
+      if (body.proyek) {
+        proj.title = body.proyek;
+        complete = true;
+      }
+
+      if (body.isi) {
+        proj.content = body.isi;
+        complete = true;
+      }
     }
   });
   await db.save();
-  return res.status(200).json({ message: "Updated successfully" });
+  if (complete) {
+    return res.status(200).json({ message: "Updated successfully" });
+  } else {
+    return red.status(404).json({ message: body });
+  }
 };
 
 export const updateUser = async (req, res) => {
@@ -139,14 +145,28 @@ export const updateUser = async (req, res) => {
 };
 
 export const updateBerita = async (req, res) => {
-  try {
-    const updateBerita = await Berita.updateOne(
-      { _id: req.params.id },
-      { $set: req.body }
-    );
-    res.status(200).json(updateBerita);
-  } catch (error) {
-    res.status(400).json({ message: error.message });
+  const id = await req.params.id;
+  const body = await req.body;
+  const db = await schema.findOne({}, "blogs").exec();
+  let complete = false;
+  db.blogs.forEach((blog) => {
+    if (blog.id == id) {
+      if (body.judul) {
+        blog.title = body.judul;
+        complete = true;
+      }
+
+      if (body.isi) {
+        blog.content = body.isi;
+        complete = true;
+      }
+    }
+  });
+  await db.save();
+  if (complete) {
+    return res.status(200).json({ message: "Blog updated" });
+  } else {
+    return res.status(404).json({ message: body });
   }
 };
 
