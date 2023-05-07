@@ -43,7 +43,7 @@ const Project = () => {
       </header>
       <div
         class="w3-container w3-padding w3-center"
-        style={{ height: "1000px" }}
+        style={{ height: "100%" }}
       >
         <h1 style={{ marginTop: "50px" }}>
           <b>project yang masih berjalan</b>
@@ -52,17 +52,17 @@ const Project = () => {
           class="w3-container w3-padding"
           style={{
             margin: "100px",
-            height: "500px",
+            height: "80%",
             borderRadius: "100px",
             background: "#02073E",
           }}
         >
           {projects.map((project, index) => (
             <div
-              class="w3-col s3 w3-card"
+              class="w3-col s3 w3-card s3"
               style={{
-                padding: "30px",
-                margin: "50px",
+                padding: "20px",
+                margin: "30px",
                 borderRadius: "50px",
                 background: "#02073E",
               }}
@@ -71,13 +71,13 @@ const Project = () => {
                 <img
                   src={project.namafile}
                   alt="Avatar"
-                  style={{ marginTop: "50px", maxWidth: "200px" }}
+                  style={{ marginTop: "50px", minWidth: "200px", maxWidth:"200px",maxHeight: "200px",minHeight: "200px" }}
                 />
                 <h5 class="w3-text-white">{project.title}</h5>
-                <h5 class="w3-text-white">Tanggal {project.date}</h5>
+                <h5 class="w3-text-white">Tanggal {Intl.DateTimeFormat('en-US', {year: 'numeric', month: '2-digit',day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'}).format(project.date)}</h5>
                 <div class="w3-section">
                   <a
-                    href={`/Projek/${project._id}`}
+                    href={`/Projek/${project.id}`}
                     class="w3-button w3-grey"
                     style={{ borderRadius: "50px" }}
                   >

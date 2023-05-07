@@ -60,18 +60,8 @@ const AddUser = () => {
           }
         );
       }
-
-      // sending data to backend
-      let data = {
-        nama:nama,
-        divisi:divisi,
-        instagram:instagram,
-        linkedin:linkedin,
-        namafile:namafile
-       }
-      addDoc(reff,data);
-      alert("berhasil ditambahkan");
-      navigate("/UserList");
+        alert("berhasil ditambahkan");
+        navigate("/UserList"); 
     } catch (error) {
       console.log(error);
     }

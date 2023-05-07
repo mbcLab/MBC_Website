@@ -93,12 +93,12 @@ const TentangKami = () => {
           <b>Asisten Laboratorium</b>
         </h1>
         {Users.map((user,_index) => (
-          <div class="w3-col l4 w3-center">
+          <div class="w3-col l4 w3-center" style={{paddingBottom:"20%"}}>
             <div
               class="w3-card-4"
-              style={{ width: "80%", borderRadius: "50px" }}
+              style={{ width: "80%", borderRadius: "50px", maxHeight:"800px"}}
             >
-              <img src={user.namafile} alt="Avatar" style={{ width: "100%" }} />
+              <img class="w3-center" src={user.namafile} alt="Avatar" style={{ width: "100%" , maxWidth: "300px", maxHeight: "400px", minWidth: "300px", minHeight: "400px", alignContent: "center" }} />
               <div class="w3-container w3-center">
                 <h5>{user.nama}</h5>
                 <h5>{user.divisi}</h5>

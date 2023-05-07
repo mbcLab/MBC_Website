@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
-import { addDoc, collection } from "firebase/firestore";
+import { updateDoc, doc, collection,getDoc } from "firebase/firestore";
 import { storage, firestore } from "../../firebase.js";
 
 const EditUser = () => {
@@ -16,34 +16,30 @@ const EditUser = () => {
   }, []);
 
   const getUserById = async () => {
-    return fetch(`http://localhost:5000/User/${id}`)
-      .then((res) => res.json())
-      .then((data) => {
-        setnama(data.name);
-        setinstagram(data.social[0].link);
-        setlinkedin(data.social[1].link);
-      });
+    const taskDocRef = doc(firestore, 'user', id)
+    try{
+      const a = await getDoc(taskDocRef);
+      setnama(a.data().nama);
+      setinstagram(a.data().instagram);
+      setlinkedin(a.data().linkedin);
+    } catch (err) {
+      alert(err)
+    }
   };
 
   const updateUser = async (e) => {
     e.preventDefault();
-    /**
-     * alternative code
-      const form = e.target;
-      setnama(form.name.value);
-      setinstagram(form.instagram.value);
-      setlinkedin(form.linkedin.value);
-     */
-
-    try {
-      await axios.patch(`http://localhost:5000/UpdateUser/${id}`, {
-        nama,
-        instagram,
-        linkedin,
-      });
-      navigate("/UserList");
-    } catch (error) {
-      console.log(error);
+    const taskDocRef = doc(firestore, 'user', id)
+    try{
+      await updateDoc(taskDocRef, {
+        nama:nama,
+        instagram:instagram,
+        linkedin:linkedin
+      })
+      alert("berhasil diubah");
+      navigate("/UserList"); 
+    } catch (err) {
+      alert(err)
     }
   };
 

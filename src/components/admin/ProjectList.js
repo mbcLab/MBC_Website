@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Button from "react-bootstrap/Button";
-import {collection, query, orderBy, onSnapshot} from "firebase/firestore";
+import {doc,collection, query, orderBy, onSnapshot,deleteDoc} from "firebase/firestore";
 import { storage, firestore } from "../../firebase.js";
 
 const ProjectList = () => {
@@ -27,10 +27,11 @@ const ProjectList = () => {
     };
 
   const deleteproject = async (id) => {
-    try {
-      await axios.delete(`http://localhost:5000/deleteProject/${id}`);
-    } catch (error) {
-      console.log(error);
+    const taskDocRef = doc(firestore, 'project', id)
+    try{
+      await deleteDoc(taskDocRef)
+    } catch (err) {
+      alert(err)
     }
   };
 
@@ -58,19 +59,18 @@ const ProjectList = () => {
                 <td>{project.title}</td>
                 <td>{new Date(project.date).toUTCString()}</td>
                 <td>{project.tanggalberakhir}</td>
-                <td>{project.content}</td>
+                <td>{project.isi}</td>
                 <td className="flex flex-row gap-3">
                   <Button
-                    href={`/editProject/${project._id}`}
+                    href={`/editProject/${project.id}`}
                     className="flex-auto"
                   >
                     Edit
                   </Button>
 
                   <Button
-                    href="/ProjectList"
                     variant="danger"
-                    onClick={() => deleteproject(project._id)}
+                    onClick={() => deleteproject(project.id)}
                     className="bg-red-600 hover:bg-red-900 flex-auto"
                   >
                     Delete

@@ -38,14 +38,15 @@ const ListBlogs = () => {
         >
           <div class="w3-container w3-center">
             <img
+              class="w3-center"
               src={berita.namafile}
               alt="Avatar"
-              style={{ marginTop: "50px", maxWidth: "200px" }}
+              style={{ marginTop: "50px", minWidth: "240px", maxWidth:"240px",maxHeight: "200px",minHeight: "200px" }}
             />
             <h5 class="w3-text-white">{berita.title}</h5>
             <div class="w3-section">
               <a
-                href={`/Blog/${berita._id}`}
+                href={`/Blog/${berita.id}`}
                 class="w3-button w3-grey"
                 style={{ borderRadius: "50px" }}
               >

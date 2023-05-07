@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Button from "react-bootstrap/Button";
-import {collection, query, orderBy, onSnapshot} from "firebase/firestore";
+import {doc,collection, query, orderBy, onSnapshot,deleteDoc} from "firebase/firestore";
 import { storage, firestore } from "../../firebase.js";
 
 const UserList = () => {
-  const [users, setUser] = useState({});
+  const [users, setUser] = useState([]);
   const reff = collection(firestore,'user');
   useEffect(() => {
     getUsers();
@@ -27,49 +27,15 @@ const UserList = () => {
     };
 
   const deleteUser = async (id) => {
-    try {
-      await axios.delete(`http://localhost:5000/deleteUsers/${id}`);
-      getUsers();
-    } catch (error) {
-      console.log(error);
+    const taskDocRef = doc(firestore, 'user', id)
+    console.log(taskDocRef);
+    try{
+      await deleteDoc(taskDocRef)
+    } catch (err) {
+      alert(err)
     }
   };
 
-  const getList = (div, divName) => {
-    function socialList(soc) {
-      return (
-        <td>
-          <a href={soc.link} target="_blank" rel="noreferrer">
-            {soc.media.toUpperCase()}
-          </a>
-        </td>
-      );
-    }
-
-    return users.map((user, index) => (
-      <tr key={user._id}>
-        <td>{index + 1}</td>
-        <td>{user.nama}</td>
-        <td>{user.divisi}</td>
-        <td>{user.instagram}</td>
-        <td>{user.linkedin}</td>
-        <td className="flex flex-row gap-3">
-          <Button href={`/edituser/${user._id}`} className="flex-auto">
-            Edit
-          </Button>
-
-          <Button
-            href="/userList"
-            variant="danger"
-            onClick={() => deleteUser(user._id)}
-            className="bg-red-600 hover:bg-red-900 flex-auto"
-          >
-            Delete
-          </Button>
-        </td>
-      </tr>
-    ));
-  };
 
   return (
     <div className="columns mt-5">
@@ -91,27 +57,27 @@ const UserList = () => {
           </thead>
           <tbody>
           {users.map((user, index) => (
-      <tr key={user._id}>
-        <td>{index + 1}</td>
-        <td>{user.nama}</td>
-        <td>{user.divisi}</td>
-        <td>{user.instagram}</td>
-        <td>{user.linkedin}</td>
-        <td className="flex flex-row gap-3">
-          <Button href={`/edituser/${user._id}`} className="flex-auto">
-            Edit
-          </Button>
+            <tr key={user.id}>
+              <td>{index + 1}</td>
+              <td>{user.nama}</td>
+              <td>{user.divisi}</td>
+              <td>{user.instagram}</td>
+              <td>{user.linkedin}</td>
+              <td className="flex flex-row gap-3">
+                <Button href={`/edituser/${user.id}`} className="flex-auto">
+                  Edit
+                </Button>
 
-          <Button
-            href="/userList"
-            variant="danger"
-            onClick={() => deleteUser(user._id)}
-            className="bg-red-600 hover:bg-red-900 flex-auto"
-          >
-            Delete
-          </Button>
-        </td>
-      </tr>))}
+                <Button
+                  variant="danger"
+                  onClick={() => deleteUser(user.id)}
+                  className="bg-red-600 hover:bg-red-900 flex-auto"
+                >
+                  Delete
+                </Button>
+              </td>
+          </tr>
+          ))}
           </tbody>
         </table>
       </div>

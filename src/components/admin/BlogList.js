@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Button from "react-bootstrap/esm/Button";
-import {collection, query, orderBy, onSnapshot} from "firebase/firestore";
+import {doc,collection, query, orderBy, onSnapshot,deleteDoc} from "firebase/firestore";
 import { storage, firestore } from "../../firebase.js";
 
 const BlogList = () => {
@@ -26,11 +26,11 @@ const BlogList = () => {
 };
 
   const deleteBerita = async (id) => {
-    try {
-      await axios.delete(`http://localhost:5000/deleteBerita/${id}`);
-      getBerita();
-    } catch (error) {
-      console.log(error);
+    const taskDocRef = doc(firestore, 'berita', id)
+    try{
+      await deleteDoc(taskDocRef)
+    } catch (err) {
+      alert(err)
     }
   };
 
@@ -59,16 +59,15 @@ const BlogList = () => {
                 <td>{berita.content}</td>
                 <td className="flex flex-row gap-3">
                   <Button
-                    href={`/editberita/${berita._id}`}
+                    href={`/editberita/${berita.id}`}
                     className="flex-auto"
                   >
                     Edit
                   </Button>
 
                   <Button
-                    href="/beritaList"
                     variant="danger"
-                    onClick={() => deleteBerita(berita._id)}
+                    onClick={() => deleteBerita(berita.id)}
                     className="bg-red-600 hover:bg-red-900 flex-auto"
                   >
                     Delete

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
-import { addDoc, collection } from "firebase/firestore";
+import { updateDoc,doc, collection,getDoc } from "firebase/firestore";
 import { storage, firestore } from "../../firebase.js";
  
 const EditBerita = () => {
@@ -9,28 +9,35 @@ const EditBerita = () => {
   const [isi, setisi] = useState("");
   const navigate = useNavigate();
   const { id } = useParams();
-  const reff = collection(firestore,'berita');
   useEffect(() => {
     getUserById();
   }, []);
  
   const getUserById = async () => {
-    const response = await axios.get(`http://localhost:5000/Berita/${id}`);
-    setJudul(response.data.judul);
-    setisi(response.data.isi);
+    const taskDocRef = doc(firestore, 'berita', id)
+    try{
+      const a = await getDoc(taskDocRef);
+      setJudul(a.data().judul);
+      setisi(a.data().isi);
+    } catch (err) {
+      alert(err)
+    }
   };
  
   const updateUser = async (e) => {
     e.preventDefault();
-    try {
-      await axios.patch(`http://localhost:5000/UpdateBerita/${id}`, {
-        judul,
-        isi,
-      });
-      navigate("/BlogList");
-    } catch (error) {
-      console.log(error);
+    const taskDocRef = doc(firestore, 'berita', id)
+    try{
+      await updateDoc(taskDocRef, {
+        judul:judul,
+        isi:isi
+      })
+      alert("berhasil diubah");
+      navigate("/BlogList"); 
+    } catch (err) {
+      alert(err)
     }
+  
   };
  
   return (

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
-import { addDoc, collection } from "firebase/firestore";
+import { updateDoc, doc, collection, getDoc } from "firebase/firestore";
 import { storage, firestore } from "../../firebase.js";
  
 const EditProject = () => {
@@ -9,27 +9,33 @@ const EditProject = () => {
   const [isi, setisi] = useState("");
   const navigate = useNavigate();
   const { id } = useParams();
-  const reff = collection(firestore,'berita');
   useEffect(() => {
     getUserById();
   }, []);
  
   const getUserById = async () => {
-    const response = await axios.get(`http://localhost:5000/Project/${id}`);
-    setproyek(response.data.proyek);
-    setisi(response.data.isi);
+    const taskDocRef = doc(firestore, 'project', id)
+    try{
+      const a = await getDoc(taskDocRef);
+      setproyek(a.data().proyek);
+      setisi(a.data().isi);
+    } catch (err) {
+      alert(err)
+    }
   };
  
   const updateUser = async (e) => {
     e.preventDefault();
-    try {
-      await axios.patch(`http://localhost:5000/UpdateProject/${id}`, {
-        proyek,
-        isi,
-      });
-      navigate("/ProjectList");
-    } catch (error) {
-      console.log(error);
+    const taskDocRef = doc(firestore, 'project', id)
+    try{
+      await updateDoc(taskDocRef, {
+        proyek:proyek,
+        isi:isi
+      })
+      alert("berhasil diubah");
+      navigate("/ProjectList"); 
+    } catch (err) {
+      alert(err)
     }
   };
  
