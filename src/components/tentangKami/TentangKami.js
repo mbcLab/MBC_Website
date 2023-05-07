@@ -6,16 +6,18 @@ import { storage, firestore } from "../../firebase.js";
 
 const TentangKami = () => {
   const [Users, setUser] = useState([]);
-  const reff = collection(firestore,'user');
+
 
   useEffect(() => {
     getUsers();
   }, []);
 
   const getUsers = async() => {
-    const snapshot = await query(reff);
-  
+    const reff = collection(firestore,'user');
+    const snapshot = await query(reff, orderBy('divisi', 'asc'));
+    
     onSnapshot(snapshot, (querySnapshot) => {
+      console.log(querySnapshot.docs);
       setUser(querySnapshot.docs.map(doc => ({
         id: doc.id,
         nama: doc.data().nama,
@@ -80,20 +82,34 @@ const TentangKami = () => {
       </div>
       <div
         class="w3-container w3-center w3-padding"
-        style={{ margin: "100px" }}
       >
         <h1
           class="w3-text white w3-center"
           style={{
-            marginTop: "100px",
-            paddingBottom: "50px",
             fontSize: "64px",
           }}
         >
           <b>Asisten Laboratorium</b>
         </h1>
-        {Users.map((user,_index) => (
-          <div class="w3-col l4 w3-center" style={{paddingBottom:"20%"}}>
+      </div>
+        <div
+        class="w3-container w3-center w3-padding"
+        style={{ margin: "100px" }}
+      >
+        <h1
+          class="w3-text white w3-center"
+          style={{
+            marginTop: "50px",
+            paddingBottom: "50px",
+            fontSize: "64px",
+          }}
+        >
+          Divisi Big Data
+        </h1>
+        {Users.map(function(user,_index) {
+          if(user.divisi == "BigData"){
+            return(
+              <div class="w3-col l4 w3-center" style={{paddingBottom:"20%"}}>
             <div
               class="w3-card-4"
               style={{ width: "80%", borderRadius: "50px", maxHeight:"800px"}}
@@ -121,9 +137,164 @@ const TentangKami = () => {
               </div>
             </div>
           </div>
-        ))}
+            );
+          }
+        })}
+        </div>
+
+
+        <div
+        class="w3-container w3-center w3-padding"
+        style={{ margin: "100px" }}
+      >
+        <h1
+          class="w3-text white w3-center"
+          style={{
+            marginTop: "50px",
+            paddingBottom: "50px",
+            fontSize: "64px",
+          }}
+        >
+          Divisi Cyber
+        </h1>
+        {Users.map(function(user,_index) {
+          if(user.divisi == "Cyber"){
+            return(
+              <div class="w3-col l4 w3-center" style={{paddingBottom:"20%"}}>
+            <div
+              class="w3-card-4"
+              style={{ width: "80%", borderRadius: "50px", maxHeight:"800px"}}
+            >
+              <img class="w3-center" src={user.namafile} alt="Avatar" style={{ width: "100%" , maxWidth: "300px", maxHeight: "400px", minWidth: "300px", minHeight: "400px", alignContent: "center" }} />
+              <div class="w3-container w3-center">
+                <h5>{user.nama}</h5>
+                <h5>{user.divisi}</h5>
+                <div class="w3-section">
+                  <a
+                    href={user.instagram}
+                    class="w3-button w3-grey"
+                    style={{ borderRadius: "50px" }}
+                  >
+                    <i class="fa fa-instagram" aria-hidden="true"></i>
+                  </a>
+                  <a
+                    href={user.linkedin}
+                    class="w3-button w3-grey"
+                    style={{ borderRadius: "50px" }}
+                  >
+                    <i class="fa fa-linkedin" aria-hidden="true"></i>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+            );
+          }
+        })}
+        </div>
+
+
+        <div
+        class="w3-container w3-center w3-padding"
+        style={{ margin: "100px" }}
+      >
+        <h1
+          class="w3-text white w3-center"
+          style={{
+            marginTop: "50px",
+            paddingBottom: "50px",
+            fontSize: "64px",
+          }}
+        >
+          Divisi GameTech
+        </h1>
+        {Users.map(function(user,_index) {
+          if(user.divisi == "Gametech"){
+            return(
+              <div class="w3-col l4 w3-center" style={{paddingBottom:"20%"}} >
+            <div
+              class="w3-card-4"
+              style={{ width: "80%", borderRadius: "50px", maxHeight:"800px"}}
+            >
+              <img class="w3-center" src={user.namafile} alt="Avatar" style={{ width: "100%" , maxWidth: "300px", maxHeight: "400px", minWidth: "300px", minHeight: "400px", alignContent: "center" }} />
+              <div class="w3-container w3-center">
+                <h5>{user.nama}</h5>
+                <h5>{user.divisi}</h5>
+                <div class="w3-section">
+                  <a
+                    href={user.instagram}
+                    class="w3-button w3-grey"
+                    style={{ borderRadius: "50px" }}
+                  >
+                    <i class="fa fa-instagram" aria-hidden="true"></i>
+                  </a>
+                  <a
+                    href={user.linkedin}
+                    class="w3-button w3-grey"
+                    style={{ borderRadius: "50px" }}
+                  >
+                    <i class="fa fa-linkedin" aria-hidden="true"></i>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+            );
+          }
+        })}
+        </div>
+
+
+        <div
+        class="w3-container w3-center w3-padding"
+        style={{ margin: "100px" }}
+      >
+        <h1
+          class="w3-text white w3-center"
+          style={{
+            marginTop: "50px",
+            paddingBottom: "50px",
+            fontSize: "64px",
+          }}
+        >
+          Divisi GIS
+        </h1>
+        {Users.map(function(user,_index) {
+          if(user.divisi == "GIS"){
+            return(
+              <div class="w3-col l4 w3-center" style={{paddingBottom:"20%"}}>
+            <div
+              class="w3-card-4"
+              style={{ width: "80%", borderRadius: "50px", maxHeight:"800px"}}
+            >
+              <img class="w3-center" src={user.namafile} alt="Avatar" style={{ width: "100%" , maxWidth: "300px", maxHeight: "400px", minWidth: "300px", minHeight: "400px", alignContent: "center" }} />
+              <div class="w3-container w3-center">
+                <h5>{user.nama}</h5>
+                <h5>{user.divisi}</h5>
+                <div class="w3-section">
+                  <a
+                    href={user.instagram}
+                    class="w3-button w3-grey"
+                    style={{ borderRadius: "50px" }}
+                  >
+                    <i class="fa fa-instagram" aria-hidden="true"></i>
+                  </a>
+                  <a
+                    href={user.linkedin}
+                    class="w3-button w3-grey"
+                    style={{ borderRadius: "50px" }}
+                  >
+                    <i class="fa fa-linkedin" aria-hidden="true"></i>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+            );
+          }
+        })}
+        </div>
       </div>
-    </div>
   );
 };
 
