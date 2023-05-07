@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
+import { addDoc, collection } from "firebase/firestore";
+import { storage, firestore } from "../../firebase.js";
 
 const BlogsbyId = () => {
+  const reff = collection(firestore,'berita');
   const [judul, setJudul] = useState("");
   const [isi, setisi] = useState("");
   const [gambar, setgambar] = useState("");

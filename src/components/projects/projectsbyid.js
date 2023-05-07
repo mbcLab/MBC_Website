@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
+import {collection, query, orderBy, onSnapshot} from "firebase/firestore";
+import { storage, firestore } from "../../firebase.js";
 
 const ProjectbyId = () => {
   const [Proyek, setProyek] = useState("");

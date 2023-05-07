@@ -1,18 +1,31 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import {collection, query, orderBy, onSnapshot} from "firebase/firestore";
+import { storage, firestore } from "../../firebase.js";
 
 const TentangKami = () => {
   const [Users, setUser] = useState([]);
+  const reff = collection(firestore,'user');
 
   useEffect(() => {
     getUsers();
   }, []);
 
-  const getUsers = async () => {
-    const response = await axios.get("http://127.0.0.1:5000/User");
-    setUser(response.data);
-  };
+  const getUsers = async() => {
+    const snapshot = await query(reff);
+  
+    onSnapshot(snapshot, (querySnapshot) => {
+      setUser(querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        nama: doc.data().nama,
+        divisi: doc.data().divisi,
+        instagram: doc.data().instagram,
+        linkedin: doc.data().linkedin,
+        namafile: doc.data().namafile
+      })))
+    }); 
+    };
 
   return (
     <div>

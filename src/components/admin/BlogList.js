@@ -1,17 +1,29 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Button from "react-bootstrap/esm/Button";
+import {collection, query, orderBy, onSnapshot} from "firebase/firestore";
+import { storage, firestore } from "../../firebase.js";
 
 const BlogList = () => {
   const [beritas, setBerita] = useState([]);
+  const reff = collection(firestore,'berita');
 
   useEffect(() => {
     getBerita();
   }, []);
-  const getBerita = async () => {
-    const response = await axios.get("http://localhost:5000/Berita");
-    setBerita(response.data);
-  };
+  const getBerita = async() => {
+    const snapshot = await query(reff);
+  
+    onSnapshot(snapshot, (querySnapshot) => {
+      setBerita(querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        title: doc.data().judul,
+        date: doc.data().tanggal,
+        content: doc.data().isi,
+        namafile: doc.data().namafile
+      })))
+    });
+};
 
   const deleteBerita = async (id) => {
     try {

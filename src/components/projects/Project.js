@@ -1,18 +1,29 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import {collection, query, orderBy, onSnapshot} from "firebase/firestore";
+import { storage, firestore } from "../../firebase.js";
 
 const Project = () => {
+  const reff = collection(firestore,'project');
   const [projects, setproject] = useState([]);
 
   useEffect(() => {
     getproject();
   }, []);
 
-  const getproject = async () => {
-    const response = await axios.get("http://localhost:5000/Project");
-    setproject(response.data);
-  };
+  const getproject = async() => {
+    const snapshot = await query(reff);
+  
+    onSnapshot(snapshot, (querySnapshot) => {
+      setproject(querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        title: doc.data().proyek,
+        date: doc.data().tanggal,
+        namafile: doc.data().namafile
+      })))
+    }); 
+    };
 
   return (
     <div>

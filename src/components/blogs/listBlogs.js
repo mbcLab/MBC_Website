@@ -1,17 +1,28 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import {collection, query, orderBy, onSnapshot} from "firebase/firestore";
+import { storage, firestore } from "../../firebase.js";
 
 const ListBlogs = () => {
+  const reff = collection(firestore,'berita');
   const [beritas, setBerita] = useState([]);
+
 
   useEffect(() => {
     getBerita();
   }, []);
 
-  const getBerita = async () => {
-    const response = await axios.get("http://127.0.0.1:5000/Berita");
-    setBerita(response.data);
+  const getBerita = async() => {
+      const snapshot = await query(reff);
+    
+      onSnapshot(snapshot, (querySnapshot) => {
+        setBerita(querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          title: doc.data().judul,
+          namafile: doc.data().namafile
+        })))
+      });
   };
   return (
     <section class="w3-container">

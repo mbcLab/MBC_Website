@@ -1,23 +1,30 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Button from "react-bootstrap/Button";
+import {collection, query, orderBy, onSnapshot} from "firebase/firestore";
+import { storage, firestore } from "../../firebase.js";
 
 const UserList = () => {
   const [users, setUser] = useState({});
-
+  const reff = collection(firestore,'user');
   useEffect(() => {
     getUsers();
   }, []);
 
   const getUsers = async () => {
-    return fetch("http://localhost:5000/User")
-      .then((res) => res.json())
-      .then((data) => setUser(data));
-    // const response = await axios
-    //   .get("http://localhost:5000/User")
-    //   .then((res) => setUser(res.data))
-    //   .catch(console.error);
-  };
+    const snapshot = await query(reff);
+  
+    onSnapshot(snapshot, (querySnapshot) => {
+      setUser(querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        nama: doc.data().nama,
+        divisi: doc.data().divisi,
+        instagram: doc.data().instagram,
+        linkedin: doc.data().linkedin,
+        namafile: doc.data().namafile
+      })))
+    }); 
+    };
 
   const deleteUser = async (id) => {
     try {
@@ -39,14 +46,13 @@ const UserList = () => {
       );
     }
 
-    return div.map((user, index) => (
+    return users.map((user, index) => (
       <tr key={user._id}>
         <td>{index + 1}</td>
-        <td>{user.name}</td>
-        <td>{divName}</td>
-        {user.social.map((soc) => {
-          return socialList(soc);
-        })}
+        <td>{user.nama}</td>
+        <td>{user.divisi}</td>
+        <td>{user.instagram}</td>
+        <td>{user.linkedin}</td>
         <td className="flex flex-row gap-3">
           <Button href={`/edituser/${user._id}`} className="flex-auto">
             Edit
@@ -84,16 +90,28 @@ const UserList = () => {
             </tr>
           </thead>
           <tbody>
-            {users.bigdata
-              ? getList(users.bigdata, "Big Data")
-              : console.log(users)}
-            {users.cyber
-              ? getList(users.cyber, "Cyber Security")
-              : console.log(users)}
-            {users.gis ? getList(users.gis, "GIS") : console.log(users)}
-            {users.gametech
-              ? getList(users.gametech, "GameTech")
-              : console.log(users)}
+          {users.map((user, index) => (
+      <tr key={user._id}>
+        <td>{index + 1}</td>
+        <td>{user.nama}</td>
+        <td>{user.divisi}</td>
+        <td>{user.instagram}</td>
+        <td>{user.linkedin}</td>
+        <td className="flex flex-row gap-3">
+          <Button href={`/edituser/${user._id}`} className="flex-auto">
+            Edit
+          </Button>
+
+          <Button
+            href="/userList"
+            variant="danger"
+            onClick={() => deleteUser(user._id)}
+            className="bg-red-600 hover:bg-red-900 flex-auto"
+          >
+            Delete
+          </Button>
+        </td>
+      </tr>))}
           </tbody>
         </table>
       </div>

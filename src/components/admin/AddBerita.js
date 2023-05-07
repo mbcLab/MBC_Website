@@ -3,7 +3,7 @@ import axios from "../../httphelper.js";
 import { firestore, storage } from "../../firebase.js";
 import { useNavigate } from "react-router-dom";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import { addDoc, collection, Firestore } from "firebase/firestore";
+import { addDoc, collection } from "firebase/firestore";
  
 const AddBerita = () => {
   const [judul, setJudul] = useState("");

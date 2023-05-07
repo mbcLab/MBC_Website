@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
+import { addDoc, collection } from "firebase/firestore";
+import { storage, firestore } from "../../firebase.js";
 
 const EditUser = () => {
   const [nama, setnama] = useState("");
@@ -8,7 +10,7 @@ const EditUser = () => {
   const [linkedin, setlinkedin] = useState("");
   const navigate = useNavigate();
   const { id } = useParams();
-
+  const reff = collection(firestore,'berita');
   useEffect(() => {
     getUserById();
   }, []);

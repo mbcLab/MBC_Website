@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { storage, firestore } from "../../firebase.js";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { addDoc, collection } from "firebase/firestore";
-
+import { storage, firestore } from "../../firebase.js";
 const AddUser = () => {
   const [nama, setnama] = useState("");
   const [divisi, setdivisi] = useState("Gametech");
